@@ -19,4 +19,3 @@ class CryptocurrencyAlertAdmin(admin.ModelAdmin):
 class CryptocurrencyPriceAdmin(admin.ModelAdmin):
     list_display = ('cryptocurrency__name', 'price', 'price_change_percentage_24h', 'timestamp')
     search_fields = ('cryptocurrency__name',)
-    list_filter = ('price', 'price_change_percentage_24h')
