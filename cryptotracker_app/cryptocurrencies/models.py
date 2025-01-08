@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class Cryptocurrency(models.Model):
     id = models.CharField(max_length=300, primary_key=True)
     name = models.CharField(max_length=500)
-    symbol = models.CharField(max_length=50, unique=True)
+    symbol = models.CharField(max_length=50)
     image = models.URLField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -38,6 +38,7 @@ class CryptocurrencyPrice(models.Model):
     cryptocurrency = models.ForeignKey(Cryptocurrency, on_delete=models.CASCADE, related_name='prices')
     price = models.DecimalField(max_digits=20, decimal_places=2)
     price_change_percentage_24h = models.DecimalField(max_digits=20, decimal_places=2)
+    market_rank = models.IntegerField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
