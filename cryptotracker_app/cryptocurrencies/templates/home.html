@@ -3,10 +3,124 @@
 
 {% block content %}
 <h1>Criptomoedas</h1>
-
+<div class="my-3">
+    <form method="get" action="{% url 'home' %}" class="input-group">
+        <input type="search" name="cryptocurrency" id="cryptocurrency" class="form-control" placeholder="Pesquisar criptomoeda" value="{{ request.GET.cryptocurrency }}">
+        <button type="submit" class="btn btn-success input-group-text">🔍</button>
+    </form>
+    {% if search_page %}
+    <h5 class="my-2">Resultados encontrados:</h5>
+    <div class="card-group mb-5">
+        {% for crypto in search_page %}
+        <div class="card justify-content-center align-items-center" style="width: 18rem;">
+            <img src="{{ crypto.cryptocurrency.image }}" class="card-img-top pt-3" alt="Imagem de {{ crypto.cryptocurrency.name }}" style="max-width: 50px;">
+            <div class="card-body">
+                <h5 class="card-title">{{ crypto.cryptocurrency.name }} ({{ crypto.cryptocurrency.symbol }})</h5>
+                <p class="card-text">
+                Preço atual: ${{ crypto.price }}<br>
+                Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
+                </p>
+                <div>
+                    <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
+                    <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+                </div>
+                <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if search_page.paginator.num_pages > 1 %}
+    {% include 'components/_pagination.html' with page_obj=search_page page_name='search_page' obj_value=request.GET.cryptocurrency search_obj='cryptocurrency'%}
+    {% endif %}
+    {% endif %}
+</div>
 <h5>Em alta 🔥</h5>
 <hr>
+<div class="card-group mb-5">
+{% for crypto in trending_cryptos %}
+<div class="card justify-content-center align-items-center" style="width: 18rem;">
+    <img src="{{ crypto.cryptocurrency.image }}" class="card-img-top pt-3" alt="Imagem de {{ crypto.cryptocurrency.name }}" style="max-width: 50px;">
+    <div class="card-body">
+        <h5 class="card-title">{{ crypto.cryptocurrency.name }} ({{ crypto.cryptocurrency.symbol }})</h5>
+        <p class="card-text">
+        Preço atual: ${{ crypto.price }}<br>
+        Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
+        </p>
+        <div>
+            <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
+            <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+        </div>
+        <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
+    </div>
+</div>
+
+
+{% endfor %}
+</div>
 <h5>Mais caras 💲</h5>
 <hr>
-<h5>Maiores variações de preço nas últimas 24h (em %)</h5>
+<div class="card-group mb-5">
+    {% for crypto in most_expensive_cryptos %}
+    <div class="card justify-content-center align-items-center" style="width: 18rem;">
+        <img src="{{ crypto.cryptocurrency.image }}" class="card-img-top pt-3" alt="Imagem de {{ crypto.cryptocurrency.name }}" style="max-width: 50px;">
+        <div class="card-body">
+            <h5 class="card-title">{{ crypto.cryptocurrency.name }} ({{ crypto.cryptocurrency.symbol }})</h5>
+            <p class="card-text">
+            Preço atual: ${{ crypto.price }}<br>
+            Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
+            </p>
+            <div>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
+                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+            </div>
+            <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
+        </div>
+</div>
+{% endfor %}
+</div>
+
+<h5>Maiores desvalorizações de preço nas últimas 24h (em %) 📉</h5>
+<hr>
+<div class="card-group mb-5">
+    {% for crypto in most_devalued_cryptos %}
+    <div class="card justify-content-center align-items-center" style="width: 18rem;">
+        <img src="{{ crypto.cryptocurrency.image }}" class="card-img-top pt-3" alt="Imagem de {{ crypto.cryptocurrency.name }}" style="max-width: 50px;">
+        <div class="card-body">
+            <h5 class="card-title">{{ crypto.cryptocurrency.name }} ({{ crypto.cryptocurrency.symbol }})</h5>
+            <p class="card-text">
+            Preço atual: ${{ crypto.price }}<br>
+            Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
+            </p>
+            <div>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
+                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+            </div>
+            <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
+        </div>
+</div>
+{% endfor %}
+</div>
+
+<h5>Maiores valorizações de preço nas últimas 24h (em %) 📈</h5>
+<hr>
+<div class="card-group mb-5">
+    {% for crypto in most_valued_cryptos %}
+    <div class="card justify-content-center align-items-center" style="width: 18rem;">
+        <img src="{{ crypto.cryptocurrency.image }}" class="card-img-top pt-3" alt="Imagem de {{ crypto.cryptocurrency.name }}" style="max-width: 50px;">
+        <div class="card-body">
+            <h5 class="card-title">{{ crypto.cryptocurrency.name }} ({{ crypto.cryptocurrency.symbol }})</h5>
+            <p class="card-text">
+            Preço atual: ${{ crypto.price }}<br>
+            Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
+            </p>
+            <div>
+                <a href="#" class="btn btn-primary btn-sm">Ver mais</a>
+                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+            </div>
+            <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
+        </div>
+</div>
+{% endfor %}
+</div>
+
 {% endblock content%}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Informações de {{object.name}}{% endblock title %}
+
+{% block content %}
+<h1 class="text-success">{{ object.name }} ({{ object.symbol }})</h1>
+<hr>
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4 p-3 d-flex align-items-center justify-content-center">
+        <img src="{{ object.image }}" class="img-fluid rounded-start" alt="Image of {{ object.name }}">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+            <h5 class="card-title">{{ object.name }}</h5>
+            <p class="card-text">
+                <ul>
+                    <li><span class="fw-bold">Preço atual: </span>${{ current_price.price }}</li>
+                    <li>
+                        <span class="fw-bold">Variação (últimas 24hrs, em %): </span>
+                        <span class="{% if current_price.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ current_price.price_change_percentage_24h }}%</span>
+                    </li>
+                    <li><span class="fw-bold">Ranking atual no mercado: </span>{{ current_price.market_rank }}º</li>
+                </ul>
+                <a href="#" class="btn btn-warning">Ativar alerta</a>
+            </p>
+          <p class="card-text"><small class="text-body-secondary">Atualizado há {{ current_price.timestamp|timesince }}</small></p>
+        </div>
+      </div>
+    </div>
+</div>
+
+<a href="{% url 'home' %}" class="btn btn-primary">Voltar a página inicial</a>
+
+{% endblock content %}

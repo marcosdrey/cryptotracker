@@ -1,0 +1,30 @@
+<nav>
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a href="?{% if search_obj %}{{search_obj}}={{ obj_value }}&{%endif%}{{ page_name }}=1" class="page-link">&laquo;</a>
+        </li>
+        <li class="page-item">
+            <a href="?{% if search_obj %}{{search_obj}}={{ obj_value }}&{%endif%}{{ page_name }}={{ page_obj.previous_page_number }}" class="page-link">&lt;</a>
+        </li>
+        {% endif %}
+        {% for page_number in page_obj.paginator.page_range %}
+            {% if page_number <= page_obj.number|add:3 and page_number >= page_obj.number|add:-3 %}
+                
+                <li class="page-item {% if page_obj.number == page_number %}active{% endif %}">
+                    <a class="page-link" href="?{% if search_obj %}{{search_obj}}={{ obj_value }}&{%endif%}{{ page_name }}={{ page_number }}">{{ page_number }}</a>
+                </li>
+                
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a href="?{% if search_obj %}{{search_obj}}={{ obj_value }}&{%endif%}{{ page_name }}={{ page_obj.next_page_number }}" class="page-link">&gt;</a>
+            </li>
+            <li class="page-item">
+                <a href="?{% if search_obj %}{{search_obj}}={{ obj_value }}&{%endif%}{{ page_name }}={{ page_obj.paginator.num_pages }}" class="page-link">&raquo;</a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
