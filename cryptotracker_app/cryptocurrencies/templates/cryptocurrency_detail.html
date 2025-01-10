@@ -4,6 +4,25 @@
 {% block content %}
 <h1 class="text-success">{{ object.name }} ({{ object.symbol }})</h1>
 <hr>
+{% if user_crypto_alerts %}
+<div class="mb-2">
+  <h4 class="mb-0">Você tem o(s) seguinte(s) alerta(s) para esta criptomoeda:</h4>
+  <p class="text-secondary">Clique no alerta caso deseje editá-lo ou excluí-lo.</p>
+</div>
+<div class="mb-5 row">
+{% for alert in user_crypto_alerts %}
+<div class="col-md-2 col-4">
+  <a href="{% url 'crypto_alert_update' alert.id %}" class="text-decoration-none btn btn-primary">
+    <div class="justify-content-center align-items-center d-flex">
+        <p class="m-0"><span class="fw-bold">{{ alert.get_alert_type_display|safe }}</span> ${{ alert.value }}</p>
+    </div>
+  </a>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<p class="text-secondary">Você não tem nenhum alerta para esta criptomoeda.</p>
+{% endif %}
 <div class="card mb-3" style="max-width: 540px;">
     <div class="row g-0">
       <div class="col-md-4 p-3 d-flex align-items-center justify-content-center">
@@ -21,7 +40,7 @@
                     </li>
                     <li><span class="fw-bold">Ranking atual no mercado: </span>{{ current_price.market_rank }}º</li>
                 </ul>
-                <a href="#" class="btn btn-warning">Ativar alerta</a>
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalForm">Ativar alerta</button>
             </p>
           <p class="card-text"><small class="text-body-secondary">Atualizado há {{ current_price.timestamp|timesince }}</small></p>
         </div>
@@ -29,6 +48,39 @@
     </div>
 </div>
 
-<a href="{% url 'home' %}" class="btn btn-primary">Voltar a página inicial</a>
+<div class="modal fade" id="modalForm" tabindex="-1" aria-labelledby="modalFormLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="modalFormLabel">Criar alerta para {{object.name}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action="{% url 'crypto_detail' object.id %}" method="post">
+        <div class="modal-body">
+          {% csrf_token %}
+          {{ form.as_p }}
+        
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+    </form>
+    </div>
+  </div>
+</div>
+
+<a href="{% url 'home' %}" class="btn btn-secondary">&laquo; Voltar para a página inicial</a>
 
 {% endblock content %}
+
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', ()=>{
+      if(document.URL.includes('showmodal=true')){
+        const modal = new bootstrap.Modal(document.getElementById('modalForm'), {});
+        modal.show();
+      }
+  });
+</script>
+{% endblock scripts %}

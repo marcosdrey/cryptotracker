@@ -1,8 +1,13 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, UpdateView, DeleteView
 from django.core.paginator import Paginator
 from django.db.models import OuterRef, Subquery
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import CryptocurrencyPrice, Cryptocurrency
+from django.views.generic.edit import ModelFormMixin
+from django.urls import reverse_lazy
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib.auth.models import User
+from .models import CryptocurrencyPrice, Cryptocurrency, CryptocurrencyAlert
+from .forms import CryptocurrencyAlertForm
 
 
 class HomeView(LoginRequiredMixin, ListView):
@@ -42,12 +47,56 @@ class HomeView(LoginRequiredMixin, ListView):
         return context
 
 
-class CryptocurrencyDetailView(LoginRequiredMixin, DetailView):
+class CryptocurrencyDetailView(LoginRequiredMixin, ModelFormMixin, DetailView):
     model = Cryptocurrency
     template_name = "cryptocurrency_detail.html"
+    form_class = CryptocurrencyAlertForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         obj = self.get_object()
         context['current_price'] = obj.prices.first()
+        context['user_crypto_alerts'] = CryptocurrencyAlert.objects.filter(
+            cryptocurrency=obj,
+            user=self.request.user
+        )
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['initial'] = {
+            'cryptocurrency': self.kwargs.get('pk'),
+            'user': self.request.user
+        }
+        return kwargs
+
+    def post(self, request, *args, **kwargs):
+        cryptocurrency_id = request.POST.get('cryptocurrency')
+        user_id = request.POST.get('user')
+        alert_type = request.POST.get('alert_type')
+        value = request.POST.get('value')
+
+        CryptocurrencyAlert.objects.create(
+            cryptocurrency=get_object_or_404(Cryptocurrency, pk=cryptocurrency_id),
+            user=get_object_or_404(User, pk=user_id),
+            alert_type=alert_type,
+            value=value
+        )
+        return redirect(request.path)
+
+
+class CryptocurrencyAlertUpdateView(LoginRequiredMixin, UpdateView):
+    model = CryptocurrencyAlert
+    template_name = "cryptocurrency_alert_update.html"
+    form_class = CryptocurrencyAlertForm
+
+    def get_success_url(self):
+        return reverse_lazy('crypto_detail', kwargs={'pk': self.get_object().cryptocurrency.id})
+
+
+class CryptocurrencyAlertDeleteView(LoginRequiredMixin, DeleteView):
+    model = CryptocurrencyAlert
+    template_name = "cryptocurrency_alert_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy('crypto_detail', kwargs={'pk': self.get_object().cryptocurrency.id})

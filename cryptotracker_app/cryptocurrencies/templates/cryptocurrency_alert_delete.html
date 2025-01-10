@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Editar alerta{% endblock title %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-start gap-3">
+    <h2>Tem certeza que deseja deletar o seguinte alerta:
+    <div class="text-decoration-none btn btn-primary">
+        <div class="justify-content-center align-items-center d-flex" style="max-width: 300px">
+            <p class="m-0"><span class="fw-bold">{{ object.get_alert_type_display|safe }}</span> ${{ object.value }}</p>
+        </div>
+    </div>
+    ?</h2>
+</div>
+<h6 class="text-secondary"><span class="fw-bold">Criptomoeda: </span>{{ object.cryptocurrency.name }} ({{ object.cryptocurrency.symbol }})</h6>
+
+<div class="mb-5">
+    <form action="{% url 'crypto_alert_delete' object.id %}" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sim, excluir alerta</button>
+    </form>
+</div>
+
+<a href="{% url 'crypto_detail' object.cryptocurrency.id %}" class="btn btn-secondary"> &laquo; Voltar para informações da criptomoeda</a>
+
+
+{% endblock content %}

@@ -22,7 +22,7 @@
                 </p>
                 <div>
                     <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
-                    <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+                    <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}?showmodal=true" class="btn btn-warning btn-sm">Ativar alerta</a>
                 </div>
                 <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
             </div>
@@ -48,7 +48,7 @@
         </p>
         <div>
             <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
-            <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+            <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}?showmodal=true" class="btn btn-warning btn-sm">Ativar alerta</a>
         </div>
         <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
     </div>
@@ -71,7 +71,7 @@
             </p>
             <div>
                 <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
-                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}?showmodal=true" class="btn btn-warning btn-sm">Ativar alerta</a>
             </div>
             <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
         </div>
@@ -93,7 +93,7 @@
             </p>
             <div>
                 <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
-                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}?showmodal=true" class="btn btn-warning btn-sm">Ativar alerta</a>
             </div>
             <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
         </div>
@@ -114,8 +114,8 @@
             Variação (24h): <span class="{% if crypto.price_change_percentage_24h < 0%}text-danger{%else%}text-success{%endif%}">{{ crypto.price_change_percentage_24h }}%</span>
             </p>
             <div>
-                <a href="#" class="btn btn-primary btn-sm">Ver mais</a>
-                <a href="#" class="btn btn-secondary btn-sm">Ativar alerta</a>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}" class="btn btn-primary btn-sm">Ver mais</a>
+                <a href="{% url 'crypto_detail' crypto.cryptocurrency.id %}?showmodal=true" class="btn btn-warning btn-sm">Ativar alerta</a>
             </div>
             <small class="text-secondary">Atualizado há {{ crypto.timestamp|timesince }}</small>
         </div>
