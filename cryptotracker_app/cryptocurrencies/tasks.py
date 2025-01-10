@@ -14,10 +14,10 @@ def update_cryptos_price():
         try:
             cryptocurrency = Cryptocurrency.objects.get(pk=id_crypto)
             CryptocurrencyPrice.objects.create(
-                    cryptocurrency=cryptocurrency,
-                    price=dict_info.get('current_price'),
-                    price_change_percentage_24h=dict_info.get('price_change_percentage_24h'),
-                    market_rank=dict_info.get('market_cap_rank')
-                )
+                cryptocurrency=cryptocurrency,
+                price=dict_info.get('current_price'),
+                price_change_percentage_24h=dict_info.get('price_change_percentage_24h'),
+                market_rank=dict_info.get('market_cap_rank')
+            )
         except Cryptocurrency.DoesNotExist:
             pass
