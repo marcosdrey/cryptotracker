@@ -6,4 +6,4 @@ class CryptocurrenciesConfig(AppConfig):
     name = 'cryptocurrencies'
 
     def ready(self):
-        import cryptocurrencies.signals
+        import cryptocurrencies.signals  # noqa: F401

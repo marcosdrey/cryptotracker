@@ -29,5 +29,5 @@ def send_cryptos_price_webhook(sender, instance, created, **kwargs):
                 'alerts': list(alerts),
             }
             notify_alert_service.send_alert(data)
-    except:
+    except:  # noqa: E722
         pass
