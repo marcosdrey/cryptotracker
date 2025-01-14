@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Notificações{% endblock %}
+{% block content %}
+<div>
+    <h1>Minhas notificações</h1>
+
+    {% if notifications %}
+    <div class="d-flex gap-2">
+        {% if user_has_unread_notifications %}
+        <form action="{% url 'notification_read' 0 %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-success" type="submit">Marcar todas como lidas</button>
+        </form>
+        {% endif %}
+        <form action="{% url 'notification_delete' 0 %}" method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Remover todas notificações</button>
+        </form>
+    </div>
+    
+
+    <ul class="list-group my-3">
+        {% for n in notifications %}
+        <li class="list-group-item {% if n.is_read %}list-group-item-light{%else%}list-group-item-secondary{% endif %} d-flex justify-content-between align-items-center">
+            <p>{{n.message}}</p>
+            <div class="d-flex gap-1">
+                {% if not n.is_read %}
+                <form action="{% url 'notification_read' n.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <i class="material-icons">done</i>
+                    </button>
+                    
+                </form>
+                {% endif %}
+                <form action="{% url 'notification_delete' n.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        <i class="material-icons">delete</i>
+                    </button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Você não tem nenhuma notificação.</p>
+    {% endif %}
+    <a href="{% url 'home' %}" class="btn btn-secondary">&laquo; Voltar para a página inicial</a>
+</div>
+{% endblock content %}
