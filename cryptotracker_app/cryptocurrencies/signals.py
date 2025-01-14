@@ -18,6 +18,25 @@ def get_alerts(instance):
             )
     return alerts
 
+
+def send_notifications(alerts, instance):
+    for alert in alerts:
+        user = alert.user
+        message = f"O preço da criptomoeda {instance.cryptocurrency.name} atingiu o alerta definido ({alert.get_alert_type_display()} {alert.value})"
+        Notification.objects.create(
+            message=message,
+            user=user
+        )
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"notifications_{user.username}",
+            {
+                "type": "send_notification",
+                "message": message
+            }
+        )
+
+
 @receiver(post_save, sender=CryptocurrencyPrice)
 def send_cryptos_price_webhook(sender, instance, created, **kwargs):
     try:
@@ -38,21 +57,7 @@ def send_cryptos_price_webhook(sender, instance, created, **kwargs):
             }
             notify_alert_service.send_alert(data)
 
-            for alert in alerts:
-                user = alert.user
-                message = f"O preço da criptomoeda {instance.cryptocurrency.name} atingiu o alerta definido ({alert.get_alert_type_display()} {alert.value})"
-                Notification.objects.create(
-                    message=message,
-                    user=user
-                )
-                channel_layer = get_channel_layer()
-                async_to_sync(channel_layer.group_send)(
-                    f"notifications_{user.username}",
-                    {
-                        "type": "send_notification",
-                        "message": message
-                    }
-                )
+            send_notifications(alerts, instance)
 
     except:  # noqa: E722
         pass
